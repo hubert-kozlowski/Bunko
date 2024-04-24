@@ -11,21 +11,43 @@ import random
 import time
 
 
-def checkResult(results):  # Check the results of the roll
-    points = 0
-    roll_again = False
-    if results.count(roundNum) == 3:  # Check if all dice match the round number
+def checkResult(results) -> tuple[int, bool]: # POINTS, ROLL AGAIN?
+    """
+    Check the results of the roll and calculate the points.
+
+    Args:
+        results (list): A list of integers representing the results of the roll.
+
+    Returns:
+        tuple: A tuple containing the points earned (int) and a flag indicating whether to roll again (bool).
+    """
+    points: int = 0
+    roll_again: bool = False
+
+    if results.count(roundNum) == 3: # If all the results match the round number, add 21 points
         points += 21
         print('Bunko!')
-    else:  # If not, check if any dice match the round number
-        for result in results: 
-            if result == roundNum: 
+    else:
+        for result in results:
+            if result == roundNum: # If the result matches the round number, add a point
                 points += 1
-                roll_again = True
-    return points, roll_again
+                roll_again = True 
+
+    return points, roll_again # Return the points and whether to roll again
 
 
-def roll():
+import random
+
+# These two functions probably could be combined into one function, but I separated them cuz reusability is king, W's in the chat
+
+
+def roll() -> tuple[list[int], int, bool]: # RESULTS, POINTS, ROLL AGAIN?
+    """
+    Simulates rolling 3 dice and returns the results, points, and whether to roll again.
+
+    Returns:
+        tuple: A tuple containing the results of the rolls, the points earned, and a boolean indicating whether to roll again.
+    """
     results: list[int] = [] # Store the results of the rolls
     # Roll 3 dice
     results.append(random.randint(1,6)) 
@@ -35,6 +57,7 @@ def roll():
     # Return the raw results and use checkResult to determine points
     points, roll_again = checkResult(results)
     return results, points, roll_again
+
 
 def singlePlayer():
     global roundNum
