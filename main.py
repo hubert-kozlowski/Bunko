@@ -11,6 +11,20 @@ import random
 import time
 
 
+def checkResult(results):  # Check the results of the roll
+    points = 0
+    roll_again = False
+    if results.count(roundNum) == 3:  # Check if all dice match the round number
+        points += 21
+        print('Bunko!')
+    else:  # If not, check if any dice match the round number
+        for result in results: 
+            if result == roundNum: 
+                points += 1
+                roll_again = True
+    return points, roll_again
+
+
 def roll():
     results: list[int] = [] # Store the results of the rolls
     # Roll 3 dice
@@ -19,27 +33,10 @@ def roll():
     results.append(random.randint(1,6))
     
     # Return the raw results and use checkResult to determine points
-    return results, checkResult(results) 
-
-def checkResult(results):  # Check the results of the roll
-    points = 0
-    if results.count(roundNum) == 3:  # Check if all dice match the round number
-        points += 21
-    else:  # If not, check if any dice match the round number
-        for result in results: 
-            if result == roundNum:
-                points += 1
-    return points
-
-
-
-
-
-
-
+    points, roll_again = checkResult(results)
+    return results, points, roll_again
 
 def singlePlayer():
-    # Initialize the round number
     global roundNum
     roundNum = 1
 
@@ -49,22 +46,27 @@ def singlePlayer():
     nameInput = input('Enter your name: ')
     players[nameInput] = 0
 
-    print(f'Round: {roundNum}')
+    print(f'Round {roundNum}')
     while True:
         
         for player in players:
-            if player == nameInput:
-                input(f"Press Enter for your turn, {nameInput}!")
-                result, points = roll()
-                players[nameInput] += points
-                print(f"{nameInput}'s result: {result}, points: {points}, total points: {players[nameInput]}")
-            else:
-                time.sleep(1)
-                result, points = roll()
-                players[player] += points
-                print(f"{player}'s result: {result}, points: {points}, total points: {players[player]}")
-
-
+            if players[player] >= 21:
+                print(f'{player} wins!')
+                return
+            scored = True
+            while scored:
+                if player == nameInput:
+                    input(f"Press Enter for your turn, {nameInput}!")
+                    result, points, roll_again = roll()
+                    players[nameInput] += points
+                    print(f"{nameInput}'s result: {result}, points: {points}, total points: {players[nameInput]}")
+                    scored = points > 0
+                else:
+                    time.sleep(1)
+                    result, points, roll_again = roll()
+                    players[player] += points
+                    print(f"{player}'s result: {result}, points: {points}, total points: {players[player]}")
+                    scored = points > 0
 
             if players[player] >= 21:
                 roundNum += 1
@@ -73,8 +75,6 @@ def singlePlayer():
                 return
 
         print(players)
-
-
 
 def main():
     singlePlayer()
