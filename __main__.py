@@ -7,12 +7,13 @@
 # Rolling the current round number: 1 point per matching die.
 # Rolling a "bunko" (all dice match the current round number): 21 points.
 
+
 import random
 import time
 import tkinter as tk
 
 
-def checkResult(results) -> tuple[int, bool]: # POINTS, ROLL AGAIN?
+def checkResult(results): # POINTS, ROLL AGAIN?
     """
     Check the results of the roll and calculate the points.
 
@@ -26,6 +27,7 @@ def checkResult(results) -> tuple[int, bool]: # POINTS, ROLL AGAIN?
 
     if results.count(roundNum) == 3: # If all the results match the round number, add 21 points
         points += 21
+        print('BUNKO')
     elif results[0] == results[1] == results[2] and results[0] != roundNum: # If all 3 have the same number but don't match the round number, add 5 points
         points += 5
     else:
@@ -38,20 +40,17 @@ def checkResult(results) -> tuple[int, bool]: # POINTS, ROLL AGAIN?
 
     return points # Return the points and whether to roll again
 
-
-import random
-
 # These two functions probably could be combined into one function, but I separated them cuz reusability is king, W's in the chat
 
 
-def roll() -> tuple[list[int], int, bool]: # RESULTS, POINTS, ROLL AGAIN?
+def roll(): # RESULTS, POINTS, ROLL AGAIN?
     """
     Simulates rolling 3 dice and returns the results, points, and whether to roll again.
 
     Returns:
         tuple: A tuple containing the results of the rolls, the points earned, and a boolean indicating whether to roll again.
     """
-    results: list[int] = [] # Store the results of the rolls
+    results = [] # Store the results of the rolls
     # Roll 3 dice
     results.append(random.randint(1,6)) 
     results.append(random.randint(1,6)) 
@@ -62,10 +61,11 @@ def roll() -> tuple[list[int], int, bool]: # RESULTS, POINTS, ROLL AGAIN?
     return results, points
 
 
-def singlePlayer():
+def singleplayer():
 
     global roundNum
     roundNum = 1
+    maxRound = 4
 
     players = {'Player1': 0, 'Player2': 0, 'Player3': 0}  # Initialize the players
     winners = {}  # Initialize the winners
@@ -75,7 +75,7 @@ def singlePlayer():
     players[nameInput] = 0
 
     print(f'\033[95mRound: {roundNum}\033[0m')
-    while roundNum < 9:
+    while roundNum < maxRound:
         print(f'Current scores: {players}')
         print('-'*20)
         for player in players:
@@ -104,7 +104,7 @@ def singlePlayer():
 
             # If the player gets a Bunko, reset the scores and increment the round       
             if players[player] >= 21:
-                print(f"\033[92m{player} got BUNKO!\033[0m")
+                print(f"\033[92m{player} WON THE ROUND!\033[0m")
                 print(f'Round {roundNum} is over!')
                 print('-'*20)
                 for key in players: # Reset player scores and increment round number
@@ -116,11 +116,12 @@ def singlePlayer():
                 else:
                     winners[player] = 1
                 roundNum += 1
-                print(f'\033[95mRound: {roundNum}\033[0m')
-                print(players)
+                
+                if roundNum < maxRound:
+                    print(f'\033[95mRound: {roundNum}\033[0m')
                 break
 
-    print(winners)
+    print(f'People who won: {winners}')
     print(f'Overall Winner: {max(winners, key=winners.get)}')
 
 
@@ -135,12 +136,13 @@ def singlePlayer():
 def simulation():
     global roundNum
     roundNum = 1
+    maxRound = 7 
 
     players = {'Player1': 0, 'Player2': 0, 'Player3': 0, 'Player4': 0}  # Initialize the players
     winners = {}  # Initialize the winners
 
     print(f'\033[95mRound: {roundNum}\033[0m')  # Print the round number here
-    while roundNum < 7:
+    while roundNum < maxRound:
         
         print(f'Current scores: {players}')
         print('-'*20)
@@ -172,11 +174,11 @@ def simulation():
                     winners[player] = 1
                 roundNum += 1
 
-                if roundNum < 7:
+                if roundNum < maxRound:
                     print(f'\033[95mRound: {roundNum}\033[0m')
                 break
 
-    print(winners)
+    print(f'People who won: {winners}')
     print(f'Overall Winner: {max(winners, key=winners.get)}')
 
 
@@ -188,3 +190,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
