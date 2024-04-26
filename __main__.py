@@ -14,6 +14,7 @@ import tkinter as tk
 
 
 def checkResult(results): # POINTS, ROLL AGAIN?
+    
     """
     Check the results of the roll and calculate the points.
 
@@ -27,7 +28,7 @@ def checkResult(results): # POINTS, ROLL AGAIN?
 
     if results.count(roundNum) == 3: # If all the results match the round number, add 21 points
         points += 21
-        print('BUNKO')
+        print('\033[92mBUNKO!!\033[0m')
     elif results[0] == results[1] == results[2] and results[0] != roundNum: # If all 3 have the same number but don't match the round number, add 5 points
         points += 5
     else:
@@ -39,8 +40,6 @@ def checkResult(results): # POINTS, ROLL AGAIN?
 
 
     return points # Return the points and whether to roll again
-
-# These two functions probably could be combined into one function, but I separated them cuz reusability is king, W's in the chat
 
 
 def roll(): # RESULTS, POINTS, ROLL AGAIN?
@@ -65,7 +64,16 @@ def singleplayer():
 
     global roundNum
     roundNum = 1
-    maxRound = 4
+    while True:
+        try:
+            maxRound = int(input('Number of rounds (max 6): '))
+            maxRound = min(maxRound, 6)
+            maxRound = maxRound + 1
+            break
+        except ValueError as e:
+            print(f'Error: {e}')
+            print('Please enter a valid number of rounds.')
+            continue
 
     players = {'Player1': 0, 'Player2': 0, 'Player3': 0}  # Initialize the players
     winners = {}  # Initialize the winners
@@ -134,9 +142,20 @@ def singleplayer():
 
 
 def simulation():
+
     global roundNum
     roundNum = 1
-    maxRound = 7 
+    while True:
+        try:
+            maxRound = int(input('Number of rounds (max 6): '))
+            maxRound = min(maxRound, 6)
+            maxRound = maxRound + 1
+            break
+        except ValueError as e:
+            print(f'Error: {e}')
+            print('Please enter a valid number of rounds.')
+            continue
+
 
     players = {'Player1': 0, 'Player2': 0, 'Player3': 0, 'Player4': 0}  # Initialize the players
     winners = {}  # Initialize the winners
